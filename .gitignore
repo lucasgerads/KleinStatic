@@ -1,0 +1,4 @@
+venv
+static
+data/*
+!data/example.md

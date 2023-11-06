@@ -1,0 +1,63 @@
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+
+    <!-- Include SimpleMDE, marked.js, and their dependencies -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+    <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/marked/latest/marked.min.js"></script>
+</head>
+<body>
+    <h1>Welcome, {{ username }}!</h1>
+    Here you edit the page <a href="/{{ page }}.html">{{ page }}</a>
+
+    <textarea id="markdown-editor">{{ content }}</textarea>
+
+    <button type="button" id="submit-button">Submit</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var simplemde = new SimpleMDE({
+                element: document.getElementById('markdown-editor'),
+                toolbar: [
+                    'bold', 'italic', 'heading', '|', 'unordered-list', 'ordered-list', '|', 'link', 'image', '|', 'preview', 'side-by-side', 'fullscreen'
+                ],
+                previewRender: function(plainText) {
+                    return marked(plainText);
+                }
+            });
+
+            document.getElementById("submit-button").addEventListener("click", function() {
+                var markdownContent = simplemde.value(); // Get the Markdown content
+
+                var xhr = new XMLHttpRequest();
+                var url = "/_" + {{ page | tojson | safe }};
+                
+
+                xhr.open("POST", url, true);
+                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        // Handle the server's response here, if needed
+                        console.log("Server response: " + xhr.responseText);
+                    }
+                };
+            
+                var data = JSON.stringify({ content: markdownContent }); // Convert data to JSON
+            
+                xhr.send(data); // Send the POST request with the Markdown content
+            });
+        });
+
+    </script>
+</body>
+</html>
