@@ -4,6 +4,10 @@ clone repository
 
     git clone https://github.com/lucasgerads/KleinStatic.git
 
+move into directory 
+
+    cd KleinStatic/
+
 create virtual envirnmont
 
     python -m venv venv
@@ -18,4 +22,4 @@ install requirements
 
 start server
 
-    python server.js
+    python server.py
